@@ -28,6 +28,31 @@ class EntryPayload(BaseModel):
     remark: str | None = None
 
 
+class BatchEnqueuePayload(BaseModel):
+    """批量下发填报：勾选同一航班的保障项，附上保障班组与协调记录。
+
+    request_id 是这份填报的编号：同一份填报重复送进来时只认第一次，
+    后续重复提交直接返回第一次的受理结果，不再重复入队。
+    """
+
+    request_id: str = Field(min_length=1)
+    flight: str = Field(min_length=1)
+    entry_ids: list[int] = Field(default_factory=list)
+    crew: str = ""
+    coordination: str = ""
+
+
+class BatchDispatchPayload(BaseModel):
+    """统一下发指令：按队列顺序一段一段推进。
+
+    stop_after 仅用于联调模拟“下发中途中断”：推进指定条数后停下，
+    没到最后环节的条目留在队列里，等补跑。
+    """
+
+    flight: str = Field(min_length=1)
+    stop_after: int | None = None
+
+
 
 class FlightstandEntry(BaseModel):
     """机位明细结构。"""
