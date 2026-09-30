@@ -28,6 +28,34 @@ class EntryPayload(BaseModel):
     remark: str | None = None
 
 
+class DispatchBatchPayload(BaseModel):
+    """勾选同一航班的保障项放进待办队列时提交的内容。"""
+
+    entry_ids: list[int] = Field(default_factory=list)
+    crew: str = ""
+    coord_note: str = ""
+    flight_no: str | None = None
+    request_id: str | None = None
+
+
+class DispatchRunPayload(BaseModel):
+    """统一下发/中断后补跑时的幂等标识；不带 request_id 表示一次新的补跑。"""
+
+    request_id: str | None = None
+
+
+class DelayReasonPayload(BaseModel):
+    """收尾被拦下后补录延误原因。"""
+
+    reason: str = ""
+
+
+class UpstreamSwitchPayload(BaseModel):
+    """演练用：模拟协调数据通道可用/不可用。"""
+
+    available: bool = True
+
+
 
 class FlightstandEntry(BaseModel):
     """机位明细结构。"""
